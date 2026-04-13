@@ -1,22 +1,33 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// ACTIVITY 2-A  ·  Add validators to this DTO
-// ─────────────────────────────────────────────────────────────────────────────
-// Requirements:
-//   - title    → required string, between 3 and 100 characters
-//   - description → optional string, max 300 characters
-//   - status   → optional; if provided must be one of: 'pending' | 'in-progress' | 'done'
-//               hint: look up @IsEnum() from class-validator
-//
-// Import what you need from 'class-validator' and add the decorators below.
-// ─────────────────────────────────────────────────────────────────────────────
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
+
+const TaskStatuses = {
+  PENDING: 'pending',
+  IN_PROGRESS: 'in-progress',
+  DONE: 'done',
+} as const;
+
+export type TaskStatus = (typeof TaskStatuses)[keyof typeof TaskStatuses];
 
 export class CreateTaskDto {
-  // TODO: add validator decorators
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(100)
   title: string;
 
-  // TODO: add validator decorators
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
   description?: string;
 
-  // TODO: add validator decorators
-  status?: 'pending' | 'in-progress' | 'done';
+  @IsEnum(TaskStatuses)
+  @IsOptional()
+  status?: TaskStatus;
 }

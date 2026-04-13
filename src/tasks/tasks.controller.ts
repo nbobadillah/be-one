@@ -1,20 +1,15 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// ACTIVITY 2-C  ·  Complete the Tasks controller
-// ─────────────────────────────────────────────────────────────────────────────
-// The service is already written for you. Your job is to wire up the routes.
-//
-// Endpoints to implement:
-//   GET    /tasks          → return all tasks
-//   GET    /tasks/:id      → return one task (use ParseIntPipe on :id)
-//   POST   /tasks          → create a task, respond with 201
-//   PATCH  /tasks/:id      → update a task
-//   DELETE /tasks/:id      → delete a task
-//
-// Hint: look at products.controller.ts for the full pattern.
-// ─────────────────────────────────────────────────────────────────────────────
-
-import { Controller } from '@nestjs/common';
-// TODO: import the decorators you need (Get, Post, Patch, Delete, Param, Body, etc.)
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -23,28 +18,32 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  // TODO: GET /tasks
+  @Get()
   findAll() {
     return this.tasksService.findAll();
   }
 
-  // TODO: GET /tasks/:id
-  findOne(id: number) {
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.tasksService.findOne(id);
   }
 
-  // TODO: POST /tasks  (status 201)
-  create(createTaskDto: CreateTaskDto) {
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
   }
 
-  // TODO: PATCH /tasks/:id
-  update(id: number, updateTaskDto: UpdateTaskDto) {
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ) {
     return this.tasksService.update(id, updateTaskDto);
   }
 
-  // TODO: DELETE /tasks/:id
-  remove(id: number) {
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.tasksService.remove(id);
   }
 }
